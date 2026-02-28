@@ -1,25 +1,24 @@
+# app.py
 import streamlit as st
-import pickle
+import joblib
 import pandas as pd
 
-# Load trained model
-model = pickle.load(open("model_building/decision_tree_model.pkl", "rb"))
+# Load trained Decision Tree model
+model = joblib.load("model_building/decision_tree_model.pkl")
 
-st.title("🛒 SuperKart Sales Prediction App")
+st.title("SuperKart Sales Prediction")
 
-st.write("Enter Product Details")
+st.write("Enter input features to predict Product Store Sales Total:")
 
-# Example input fields
-feature1 = st.number_input("Feature 1")
-feature2 = st.number_input("Feature 2")
-feature3 = st.number_input("Feature 3")
+# Example: dynamically create inputs for numeric columns
+# Update these based on your dataset columns
+feature_cols = ['feature1', 'feature2']  # Replace with actual feature names
+
+input_data = {}
+for col in feature_cols:
+    input_data[col] = st.number_input(f"Enter {col}")
 
 if st.button("Predict"):
-    input_data = pd.DataFrame(
-        [[feature1, feature2, feature3]],
-        columns=["feature1", "feature2", "feature3"]
-    )
-
-    prediction = model.predict(input_data)
-
-    st.success(f"Predicted Sales: {prediction[0]}")
+    df_input = pd.DataFrame([input_data])
+    prediction = model.predict(df_input)
+    st.success(f"Predicted Sales Total: {prediction[0]:.2f}")
